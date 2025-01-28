@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, model_validator, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict
 
 
 # Enum for delay
@@ -28,26 +28,6 @@ class NotificationSchema(BaseModel):
     delay: int = Delay.INSTANT.value
 
     model_config = ConfigDict(extra='forbid')
-
-    @model_validator(mode='before')
-    @classmethod
-    def validate_recipient(cls, values) -> list[str]:
-        recipient = values.get('recipient')
-        if isinstance(recipient, str):
-            values['recipient'] = [recipient]
-        elif isinstance(recipient, list) and all(isinstance(item, str) for item in recipient):
-            pass
-        else:
-            raise ValueError('Recipient must be either a string or a list of strings.')
-        return values
-
-    def get_recipient_as_list(self) -> list[str]:
-        """
-        Returns list of recipients. If `recipient` id a string, converts it into list
-        """
-        if isinstance(self.recipient, str):
-            return [self.recipient]
-        return self.recipient
 
 
 # DeliveryLog Pydentic Schema

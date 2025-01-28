@@ -1,15 +1,15 @@
 from celery import Celery
 
-app = Celery(
-    "FastTeleMail",
+celery_app = Celery(
+    "tasks",
     broker="redis://localhost:6379/0",
     backend="redis://localhost:6379/0",
 )
 
-app.autodiscover_tasks(["src.notifications.tasks"])
+celery_app.autodiscover_tasks(["src.notifications.tasks"])
 
 # Celery settings
-app.conf.update(
+celery_app.conf.update(
     task_serializer="json",
     accept_content=["json"],
     result_serializer="json",

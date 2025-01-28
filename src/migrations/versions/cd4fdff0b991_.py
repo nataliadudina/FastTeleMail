@@ -55,26 +55,25 @@ def downgrade():
 
     # Создание старых таблиц (если нужно откатиться назад)
     op.create_table(
-        'messages',
+        'notifications',
         sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False),
         sa.Column('subject', sa.VARCHAR(length=255), nullable=True),
         sa.Column('message', sa.TEXT(), nullable=False),
         sa.Column('recipient', postgresql.JSON(astext_type=sa.Text()), nullable=False),
         sa.Column('delay', sa.INTEGER(), nullable=True),
         sa.Column('created_at', postgresql.TIMESTAMP(), nullable=True),
-        sa.PrimaryKeyConstraint('id', name='messages_pkey')
+        sa.PrimaryKeyConstraint('id', name='notifications_pkey')
     )
-    op.create_index('ix_messages_id', 'messages', ['id'], unique=False)
+    op.create_index('ix_notifications', 'notifications', ['id'], unique=False)
 
     op.create_table(
         'delivery_logs',
         sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False),
-        sa.Column('message_id', sa.INTEGER(), nullable=False),
+        sa.Column('notification_id', sa.INTEGER(), nullable=False),
         sa.Column('status', sa.VARCHAR(length=20), nullable=False),
         sa.Column('timestamp', postgresql.TIMESTAMP(), nullable=True),
         sa.Column('error_message', sa.TEXT(), nullable=True),
-        sa.ForeignKeyConstraint(['message_id'], ['messages.id'], name='delivery_logs_message_id_fkey'),
+        sa.ForeignKeyConstraint(['notification_id'], ['notifications.id'], name='delivery_logs_notification_id_fkey'),
         sa.PrimaryKeyConstraint('id', name='delivery_logs_pkey')
     )
-    op.create_index('ix_delivery_logs_id', 'delivery_logs', ['id'], unique=False)
     # ### end Alembic commands ###
