@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, model_validator, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict
 
 
 # Enum for delay
@@ -25,7 +25,7 @@ class NotificationSchema(BaseModel):
     subject: str = Field(max_length=50, default='No Subject')
     message: str = Field(max_length=1000)
     recipient: list[str] | str
-    delay: Delay = Delay.INSTANT.value
+    delay: int = Delay.INSTANT.value
 
     model_config = ConfigDict(extra='forbid')
 
