@@ -1,8 +1,10 @@
 import asyncio
 import logging
+from smtplib import SMTPException
 from typing import List
 
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
+from fastapi_mail.errors import ConnectionErrors
 
 from src.config import app_settings
 
@@ -38,5 +40,8 @@ def send_email(subject: str, message: str, recipient_list: List[str]) -> None:
         fm = FastMail(conf)
         asyncio.run(fm.send_message(email_message))
         logger.info("Email sent successfully")
-    except Exception as e:
-        logger.error(f"Error sending email: {str(e)}")
+
+    except ConnectionErrors as conn_err:
+        logger.error(f"Connection error when sending email: {str(conn_err)}")
+    except SMTPException as smtp_err:
+        logger.error(f"SMTP error when sending email: {str(smtp_err)}")
